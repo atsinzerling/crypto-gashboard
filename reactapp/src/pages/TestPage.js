@@ -39,7 +39,7 @@ export default class App extends Component {
 
     render() {
         let contents = this.state.loading
-            ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
+            ? <p><em>Loading...</em></p>
             : App.renderForecastsTable(this.state.forecasts);
 
         return (
@@ -47,13 +47,20 @@ export default class App extends Component {
                 <h1 id="tabelLabel" >Weather forecast</h1>
                 <p>This component demonstrates fetching data from the server.</p>
                 {contents}
+                <button onClick={this.populateWeatherData}>Refresh</button>
             </div>
         );
     }
 
-    async populateWeatherData() {
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    populateWeatherData = async () => {
+        this.setState({ loading: true });
         const response = await fetch('weatherforecast');
         const data = await response.json();
+        await this.delay(1500);
         this.setState({ forecasts: data, loading: false });
     }
 }

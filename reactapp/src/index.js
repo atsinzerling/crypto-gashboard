@@ -41,6 +41,7 @@ import Dashboard from "./pages/Dashboard";
 import Manage from "./pages/Manage";
 import NoPage from "./pages/NoPage";
 import Login from "./pages/Login";
+import TestPage from "./pages/TestPage";
 
 export default function App() {
     return (
@@ -49,6 +50,7 @@ export default function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Dashboard />} />
                     <Route path="manage" element={<Manage />} />
+                    <Route path="test" element={<TestPage />} />
                     <Route path="*" element={<NoPage />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
