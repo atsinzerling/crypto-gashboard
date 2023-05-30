@@ -1,5 +1,5 @@
-const Blogs = () => {
-    return <h1>Blog Articles</h1>;
+const Manage = () => {
+    return <h1>Manage Trackings</h1>;
 };
 
-export default Blogs;
+export default Manage;

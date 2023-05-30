@@ -1,26 +1,48 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import './Login.css';
 
 const Login = () => {
-    //return 
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleEmailChange = (event) => setEmail(event.target.value);
+    const handlePasswordChange = (event) => setPassword(event.target.value);
 
     return (
-        <body id="login">
+        <form id="login">
             <div class="box">
                 <h1>Dashboard</h1>
 
-                <input type="email" name="email" value="email" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" />
+                <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    placeholder="email"
+                    onChange={handleEmailChange}
+                    className="email"
+                />
 
-                <input type="password" name="email" value="email" onFocus="field_focus(this, 'email');" onblur="field_blur(this, 'email');" class="email" />
+                <input
+                    type="password"
+                    name="password"
+                    value={password}
+                    placeholder="password"
+                    onChange={handlePasswordChange}
+                    className="email"
+                />
 
-                <p>Forgot your password?</p>
-
-                <a href="#"><div class="btn">Log In</div></a>
+                <p id="forgot-password">
+                    <Link to="/forgot-password">Forgot your password?</Link>
+                </p>
+                <a href="#"><div className="btn">Log In</div></a>
 
                 <a href="#"><div id="btn2">Sign Up</div></a>
 
             </div>
 
-        </body>
+        </form>
 
     );
 };
