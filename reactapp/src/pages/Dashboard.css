@@ -1,0 +1,10 @@
+.custom-tooltip {
+    transform: translateY(-50px);
+    /*background-color: #fff;*/
+    padding: 2px;
+    border: 1px solid #ccc;
+}
+
+.display-graph-data{
+    display: flex;
+}
