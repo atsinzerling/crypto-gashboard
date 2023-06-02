@@ -34,8 +34,7 @@ const CryptoChart = () => {
     const [data, setData] = useState([]);
     const [holdingsData, setHoldingsData] = useState(holdings); // Use holdings as state
 
-    const [totalValue, setTotalValue] = useState(0);
-    const [coinDetails, setCoinDetails] = useState([]);
+    const [currentDataEntry, setCurrentDataEntry] = useState({ total: 0, quantity: {} });
 
     // Extract coins and start date from holdings
     const coins = [...new Set(holdingsData.flatMap(holding => Object.keys(holding).filter(key => key !== 'date')))];
@@ -80,6 +79,10 @@ const CryptoChart = () => {
                     // Find the corresponding data item for the current date
                     const dataItem = chartData.find(dataItem => dataItem.date === date);
                     dataItem[coin] = price * quantity; // Calculate value of holding
+                    if (!dataItem.quantity) {
+                        dataItem.quantity = {};
+                    }
+                    dataItem.quantity[coin] = quantity; // Add quantity to data item
                     dataItem.total = (dataItem.total || 0) + dataItem[coin]; // Update total value
                 });
             }
@@ -94,20 +97,21 @@ const CryptoChart = () => {
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
-            const total = payload.reduce((acc, current) => acc + current.value, 0);
+            /*const total = payload.reduce((acc, current) => acc + current.value, 0);
             setTotalValue(total.toFixed(2));
 
             const coinDetail = payload.map((coin) => ({
                 name: coin.name,
                 value: coin.value,
                 quantity: coin.payload[coin.dataKey]
-            }));
-            setCoinDetails(coinDetail);
+            }));*/
+            /*console.log(payload[0].payload);*/
+            setCurrentDataEntry(payload[0].payload);
+            /*console.log(payload, coinDetail);*/
 
             return (
                 <div className="custom-tooltip">
-                    <p>{`Date: ${label}`}</p>
-                    <p>{`Total value: ${total.toFixed(2)} USD`}</p>
+                    <p>{`${payload[0].payload.total.toFixed(2)} USD`}</p>
                 </div>
             );
         }
@@ -130,10 +134,11 @@ const CryptoChart = () => {
                 <Line type="monotone" dataKey="total" stroke="#8884d8" dot={false} /> {/* Show total value */}
             </LineChart>
             <div>
-                <p>{`Total value: ${totalValue} USD`}</p>
-                {coinDetails.map((coin) => (
-                    <p key={coin.name}>
-                        {`${coin.name}: Quantity = ${coin.quantity}, Total Value = ${coin.value} USD`}
+                <p>{`Date: ${currentDataEntry.date}`}</p>
+                <p>{`Total value: ${currentDataEntry.total.toFixed(2)} USD`}</p>
+                {Object.keys(currentDataEntry.quantity).map((coin) => (
+                    <p key={coin}>
+                        {`${coin}: Quantity = ${currentDataEntry.quantity[coin]}, Total Value = ${currentDataEntry[coin].toFixed(2) } USD`}
                     </p>
                 ))}
             </div>
