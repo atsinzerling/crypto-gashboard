@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
 import moment from 'moment';
 import './Dashboard.css';
+import CryptoPieChart from './CryptoPieChart';
 
 const holdings = [
     {
@@ -29,6 +31,13 @@ const holdings = [
         ripple: 215,
     }
 ];
+
+const COLORS = {
+    'bitcoin': '#FFBB28',
+    'ethereum': '#8884d8',
+    'ripple': '#82ca9d',
+    'litecoin': '#ffc658',
+};
 
 const CryptoChart = () => {
     const [data, setData] = useState([]);
@@ -88,6 +97,10 @@ const CryptoChart = () => {
             }
 
             setData(chartData);
+            /*console.log("updated");*/
+            if (currentDataEntry.date == undefined){
+                setCurrentDataEntry(chartData[chartData.length - 1]); // Set current data entry to the last item in chartData
+            }
         };
 
         fetchData();
@@ -105,7 +118,7 @@ const CryptoChart = () => {
                 value: coin.value,
                 quantity: coin.payload[coin.dataKey]
             }));*/
-            /*console.log(payload[0].payload);*/
+            console.log(payload[0].payload);
             setCurrentDataEntry(payload[0].payload);
             /*console.log(payload, coinDetail);*/
 
@@ -118,6 +131,36 @@ const CryptoChart = () => {
 
         return null;
     };
+
+    const PieChart = () => {
+        const [pieData, setPieData] = useState(Object.keys(currentDataEntry.quantity).map((coin) => ({
+            name: coin,
+            value: currentDataEntry[coin],
+        })));
+
+        return(
+            <PieChart width={400} height={400}>
+                <Pie
+                    dataKey="value"
+                    isAnimationActive={false}
+                    data={pieData}
+                    cx={200}
+                    cy={200}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    label
+                >
+                    {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
+                    ))}
+                </Pie>
+            </PieChart>
+
+        )
+
+    }
+
+
 
     return (
         <div className='display-graph-data'>
@@ -138,10 +181,11 @@ const CryptoChart = () => {
                 <p>{`Total value: ${currentDataEntry.total.toFixed(2)} USD`}</p>
                 {Object.keys(currentDataEntry.quantity).map((coin) => (
                     <p key={coin}>
-                        {`${coin}: Quantity = ${currentDataEntry.quantity[coin]}, Total Value = ${currentDataEntry[coin].toFixed(2) } USD`}
+                        <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${currentDataEntry.quantity[coin]}, Total Value = ${currentDataEntry[coin].toFixed(2) } USD`}
                     </p>
                 ))}
             </div>
+            <CryptoPieChart data={currentDataEntry} colors={COLORS} />
         </div>
     );
 };
