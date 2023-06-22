@@ -230,6 +230,9 @@ class CryptoChart extends React.Component {
                     </div>
                     <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
                 </div>
+                <div>
+                    <h2>Coins details</h2>
+                </div>
                 {this.coins.map((coin) => (
                     <CryptoCoinChart
                         key={coin}

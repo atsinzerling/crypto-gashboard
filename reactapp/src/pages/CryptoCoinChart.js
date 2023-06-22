@@ -4,34 +4,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { PieChart, Pie, Cell } from 'recharts';
 import './CryptoCoinChart.css';
 
-/*class CryptoCoinChart extends React.Component {
-    render() {
-        const { coin, data, color, currentDataEntry } = this.props;
-        return (
-            <div className="display-subgraph-data">
-                <h4>{`Value of ${coin}`}</h4>
-                <LineChart
-                    width={400}
-                    height={200}
-                    data={data}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Tooltip />
-                    <Line type="monotone" dataKey={coin} stroke={color} dot={false} />
-                </LineChart>
-                <div >
-                    <p>
-                        <span style={{ color: color }}>{coin}</span>{`: ${(typeof currentDataEntry[coin] === "undefined" ? 0 :currentDataEntry[coin].toFixed(2))} USD`}
-                    </p>
-                </div>
-            </div>
-        );
-    }
-}*/
-
 class CryptoCoinChart extends React.Component {
     constructor(props) {
         super(props);
@@ -49,10 +21,27 @@ class CryptoCoinChart extends React.Component {
         }
     };
 
+    componentDidMount() {
+        if (this.props.data && this.props.data.length > 0) {
+            this.setState({
+                currentCoinDataEntry: this.props.data[this.props.data.length - 1],
+            });
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.data !== this.props.data && this.props.data.length > 0) {
+            this.setState({
+                currentCoinDataEntry: this.props.data[this.props.data.length - 1],
+            });
+        }
+    }
+
     CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             this.handleActiveTooltip({ active, payload });
-            console.log(payload);
+            /*console.log(payload);
+            console.log(this.state.currentCoinDataEntry);*/
 
             return (
                 <div className="custom-tooltip">
@@ -68,7 +57,7 @@ class CryptoCoinChart extends React.Component {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div>
-                    <h4>{`Value of ${coin}`}</h4>
+                    <h4>{`${coin}`}</h4>
                     <LineChart
                         width={440}
                         height={180}
@@ -86,6 +75,9 @@ class CryptoCoinChart extends React.Component {
                     <p>{`Date: ${this.state.currentCoinDataEntry.date}`}</p>
                     <p style={{ color }}>
                         {`Value of ${coin}: ${this.state.currentCoinDataEntry[coin]?.toFixed(2)} USD`}
+                    </p>
+                    <p style={{ color }}>
+                        {`Quantity: ${this.state.currentCoinDataEntry.quantity[coin]}`}
                     </p>
                 </div>
             </div>
