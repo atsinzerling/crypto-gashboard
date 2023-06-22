@@ -3,9 +3,9 @@ import { PieChart, Pie, Cell } from 'recharts';
 
 
 const CryptoPieChart = ({ data, colors}) => {
-    const pieData = Object.keys(data.quantity).map((coin) => ({
+    const pieData = Object.keys(data.coins).map((coin) => ({
         name: coin,
-        value: data[coin],
+        value: data.coins[coin].value,
     }));
 
     return (

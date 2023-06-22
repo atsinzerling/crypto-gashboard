@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/*import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import moment from 'moment';
@@ -8,8 +8,8 @@ const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         const total = payload.reduce((acc, current) => acc + current.value, 0);
         return (
-            <div className = "custom-tooltip" > {/*style={{ backgroundColor: '#fff', padding: '3px', border: '1px solid #ccc', color: '#050404' }}*/}
-                {/*<p>{`Date: ${label}`}</p>*/}
+            <div className = "custom-tooltip" > {*//*style={{ backgroundColor: '#fff', padding: '3px', border: '1px solid #ccc', color: '#050404' }}*//*}
+                {*//*<p>{`Date: ${label}`}</p>*//*}
                 <p>{`Total value: ${total.toFixed(2)} USD`}</p>
             </div>
         );
@@ -71,3 +71,4 @@ const CryptoChart = ({ startDate }) => {
 };
 
 export default CryptoChart;
+*/

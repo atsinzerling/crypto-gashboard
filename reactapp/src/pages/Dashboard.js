@@ -106,7 +106,7 @@ class CryptoChart extends React.Component {
         this.state = {
             data: [],
             holdingsData: holdings,
-            currentDataEntry: { total: 0, quantity: {} },
+            currentDataEntry: { total: 0, coins: {} },
         };
 
         this.handleActiveTooltip = this.handleActiveTooltip.bind(this);
@@ -128,11 +128,13 @@ class CryptoChart extends React.Component {
         console.log("fetching");
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        /*if (prevState.startDate !== this.startDate || prevState.holdingsData !== this.state.holdingsData || prevState.coins !== this.coins) {
+/*    componentDidUpdate(prevProps, prevState) {
+        if (prevState.startDate !== this.startDate || prevState.holdingsData !== this.state.holdingsData || prevState.coins !== this.coins) {
             this.fetchData();
-        }*/
-    }
+            console.log("updating");
+        }
+        *//*EFFICIENCY*//*
+    }*/
 
     fetchData = async () => {
         // Order the holdings data by date
@@ -174,21 +176,27 @@ class CryptoChart extends React.Component {
                 const dataItem = chartData.find(dataItem => dataItem.date === date);
 
 
-                dataItem[coin] = price * quantity; // Calculate value of holding
+                /*dataItem[coin] = price * quantity; // Calculate value of holding
                 if (!dataItem.quantity) {
                     dataItem.quantity = {};
                 }
                 dataItem.quantity[coin] = quantity; // Add quantity to data item
-                dataItem.total = (dataItem.total || 0) + dataItem[coin]; // Update total value
+                dataItem.total = (dataItem.total || 0) + dataItem[coin]; // Update total value*/
 
 
-/*                if (!dataItem[coin]) {
-                    dataItem[coin] = {};
+                
+
+                if (!dataItem.coins) {
+                    dataItem.coins = {};
                 }
-                dataItem[coin].value = price * quantity;
-                dataItem[coin].quantity = quantity;
-                dataItem[coin].price = price;
-                dataItem.total = (dataItem.total || 0) + dataItem[coin].value; // Update total value*/
+
+                if (!dataItem.coins[coin]) {
+                    dataItem.coins[coin] = {};
+                }
+                dataItem.coins[coin].value = price * quantity;
+                dataItem.coins[coin].quantity = quantity;
+                dataItem.coins[coin].price = price;
+                dataItem.total = (dataItem.total || 0) + dataItem.coins[coin].value; // Update total value
             });
         }
 
@@ -232,10 +240,10 @@ class CryptoChart extends React.Component {
                     </LineChart>
                     <div>
                         <p>{`Date: ${this.state.currentDataEntry.date}`}</p>
-                        <p>{`Total value: ${this.state.currentDataEntry.total.toFixed(2)} USD`}</p>
-                        {Object.keys(this.state.currentDataEntry.quantity).map((coin) => (
+                        <p>{`Total value: ${this.state.currentDataEntry.total?.toFixed(2)} USD`}</p>
+                        {Object.keys(this.state.currentDataEntry.coins).map((coin) => (
                             <p key={coin}>
-                                <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.quantity[coin]}, Total Value = ${this.state.currentDataEntry[coin].toFixed(2)} USD`}
+                                <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.coins[coin].quantity}, Total Value = ${this.state.currentDataEntry.coins[coin].value.toFixed(2)} USD`}
                             </p>
                         ))}
                     </div>

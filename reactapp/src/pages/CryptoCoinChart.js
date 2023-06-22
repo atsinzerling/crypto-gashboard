@@ -8,7 +8,8 @@ class CryptoCoinChart extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentCoinDataEntry: { total: 0, quantity: 0 },
+            currentCoinDataEntry: {
+                total: 0, coins: {} },
         };
         this.handleActiveTooltip = this.handleActiveTooltip.bind(this);
     }
@@ -43,9 +44,12 @@ class CryptoCoinChart extends React.Component {
             /*console.log(payload);
             console.log(this.state.currentCoinDataEntry);*/
 
+            /*console.log(payload[0].payload);
+            console.log(payload[0].payload[this.props.coin]);*/
+
             return (
                 <div className="custom-tooltip">
-                    <p>{`${payload[0].value.toFixed(2)} USD`}</p>
+                    <p>{`${payload[0].payload.coins[ this.props.coin ]?.value.toFixed(2)} USD`}</p> 
                 </div>
             );
         }
@@ -55,9 +59,9 @@ class CryptoCoinChart extends React.Component {
     render() {
         const { coin, data, color } = this.props;
         return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div>
-                    <h4>{`${coin}`}</h4>
+            <div >
+                <h4>{`${coin}`}</h4>
+                <div className='display-subgraph-data'>
                     <LineChart
                         width={440}
                         height={180}
@@ -68,17 +72,17 @@ class CryptoCoinChart extends React.Component {
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip content={this.CustomTooltip} />
-                        <Line type="monotone" dataKey={coin} stroke={color} dot={false} />
+                        <Line type="monotone" dataKey={`coins.${coin}.value`} stroke={color} dot={false} />
                     </LineChart>
-                </div>
                 <div style={{ marginLeft: '20px' }}>
                     <p>{`Date: ${this.state.currentCoinDataEntry.date}`}</p>
                     <p style={{ color }}>
-                        {`Value of ${coin}: ${this.state.currentCoinDataEntry[coin]?.toFixed(2)} USD`}
+                        {`Value of ${coin}: ${this.state.currentCoinDataEntry.coins[coin]?.value?.toFixed(2)} USD`}
                     </p>
                     <p style={{ color }}>
-                        {`Quantity: ${this.state.currentCoinDataEntry.quantity[coin]}`}
+                        {`Quantity: ${this.state.currentCoinDataEntry.coins[coin]?.quantity}`}
                     </p>
+                </div>
                 </div>
             </div>
         );
