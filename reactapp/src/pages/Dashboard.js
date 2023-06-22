@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell } from 'recharts';
 import moment from 'moment';
 import './Dashboard.css';
 import CryptoPieChart from './CryptoPieChart';
+import CryptoCoinChart from './CryptoCoinChart';
 
 const holdings = [
     {
@@ -204,29 +205,39 @@ class CryptoChart extends React.Component {
 
     render() {
         return (
-            <div className='display-graph-data'>
-                <LineChart
-                    width={500}
-                    height={300}
-                    data={this.state.data}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Tooltip content={this.CustomTooltip} />
-                    <Line type="monotone" dataKey="total" stroke="#8884d8" dot={false} /> {/* Show total value */}
-                </LineChart>
-                <div>
-                    <p>{`Date: ${this.state.currentDataEntry.date}`}</p>
-                    <p>{`Total value: ${this.state.currentDataEntry.total.toFixed(2)} USD`}</p>
-                    {Object.keys(this.state.currentDataEntry.quantity).map((coin) => (
-                        <p key={coin}>
-                            <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.quantity[coin]}, Total Value = ${this.state.currentDataEntry[coin].toFixed(2)} USD`}
-                        </p>
-                    ))}
+            <div>
+                <div className='display-graph-data'>
+                    <LineChart
+                        width={500}
+                        height={300}
+                        data={this.state.data}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Tooltip content={this.CustomTooltip} />
+                        <Line type="monotone" dataKey="total" stroke="#8884d8" dot={false} /> {/* Show total value */}
+                    </LineChart>
+                    <div>
+                        <p>{`Date: ${this.state.currentDataEntry.date}`}</p>
+                        <p>{`Total value: ${this.state.currentDataEntry.total.toFixed(2)} USD`}</p>
+                        {Object.keys(this.state.currentDataEntry.quantity).map((coin) => (
+                            <p key={coin}>
+                                <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.quantity[coin]}, Total Value = ${this.state.currentDataEntry[coin].toFixed(2)} USD`}
+                            </p>
+                        ))}
+                    </div>
+                    <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
                 </div>
-                <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
+                {this.coins.map((coin) => (
+                    <CryptoCoinChart
+                        key={coin}
+                        coin={coin}
+                        data={this.state.data}
+                        color={COLORS[coin]}
+                    />
+                ))}
             </div>
         );
     }
