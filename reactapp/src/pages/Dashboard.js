@@ -172,12 +172,23 @@ class CryptoChart extends React.Component {
 
                 // Find the corresponding data item for the current date
                 const dataItem = chartData.find(dataItem => dataItem.date === date);
+
+
                 dataItem[coin] = price * quantity; // Calculate value of holding
                 if (!dataItem.quantity) {
                     dataItem.quantity = {};
                 }
                 dataItem.quantity[coin] = quantity; // Add quantity to data item
                 dataItem.total = (dataItem.total || 0) + dataItem[coin]; // Update total value
+
+
+/*                if (!dataItem[coin]) {
+                    dataItem[coin] = {};
+                }
+                dataItem[coin].value = price * quantity;
+                dataItem[coin].quantity = quantity;
+                dataItem[coin].price = price;
+                dataItem.total = (dataItem.total || 0) + dataItem[coin].value; // Update total value*/
             });
         }
 
