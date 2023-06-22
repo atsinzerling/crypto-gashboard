@@ -49,7 +49,7 @@ class CryptoCoinChart extends React.Component {
 
             return (
                 <div className="custom-tooltip">
-                    <p>{`${payload[0].payload.coins[ this.props.coin ]?.value.toFixed(2)} USD`}</p> 
+                    <p>{`${payload[0].payload.coins[this.props.coin]?.[this.props.currentMetric].toFixed(2)} USD`}</p> 
                 </div>
             );
         }
@@ -57,7 +57,7 @@ class CryptoCoinChart extends React.Component {
     }
 
     render() {
-        const { coin, data, color } = this.props;
+        const { coin, data, color, currentMetric} = this.props;
         return (
             <div >
                 <h4>{`${coin}`}</h4>
@@ -72,16 +72,27 @@ class CryptoCoinChart extends React.Component {
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip content={this.CustomTooltip} />
-                        <Line type="monotone" dataKey={`coins.${coin}.value`} stroke={color} dot={false} />
+                        <Line type="monotone" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
                     </LineChart>
                 <div style={{ marginLeft: '20px' }}>
-                    <p>{`Date: ${this.state.currentCoinDataEntry.date}`}</p>
-                    <p style={{ color }}>
-                        {`Value of ${coin}: ${this.state.currentCoinDataEntry.coins[coin]?.value?.toFixed(2)} USD`}
-                    </p>
-                    <p style={{ color }}>
-                        {`Quantity: ${this.state.currentCoinDataEntry.coins[coin]?.quantity}`}
-                    </p>
+                        <p>{`Date: ${this.state.currentCoinDataEntry.date}`}</p>
+                        {currentMetric === 'price' ? (
+
+                            <p style={{ color }}>
+                                {`Price of ${coin}: ${this.state.currentCoinDataEntry.coins[coin]?.price?.toFixed(2)} USD`}
+                            </p>
+
+                        ): (
+                            <>
+                                <p style={{ color }}>
+                                    {`Value of ${coin}: ${this.state.currentCoinDataEntry.coins[coin]?.value?.toFixed(2)} USD`}
+                                </p>
+                                <p style={{ color }}>
+                                    {`Quantity: ${this.state.currentCoinDataEntry.coins[coin]?.quantity}`}
+                                </p>
+                            </>
+                        )}
+                        
                 </div>
                 </div>
             </div>

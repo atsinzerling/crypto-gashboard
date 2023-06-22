@@ -8,3 +8,6 @@
 .display-graph-data{
     display: flex;
 }
+.display-metric-switch-buttons {
+    display: flex;
+}

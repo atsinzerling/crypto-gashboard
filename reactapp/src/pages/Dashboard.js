@@ -107,6 +107,7 @@ class CryptoChart extends React.Component {
             data: [],
             holdingsData: holdings,
             currentDataEntry: { total: 0, coins: {} },
+            currentMetric: 'value', // for storing the current metric for the subgraphs
         };
 
         this.handleActiveTooltip = this.handleActiveTooltip.bind(this);
@@ -222,6 +223,12 @@ class CryptoChart extends React.Component {
         return null;
     };
 
+    handleMetricChange = (newMetric) => {
+        this.setState({
+            currentMetric: newMetric,
+        });
+    };
+
     render() {
         return (
             <div>
@@ -251,6 +258,20 @@ class CryptoChart extends React.Component {
                 </div>
                 <div>
                     <h2>Coins details</h2>
+                    <div className='display-metric-switch-buttons'>
+                        <button
+                            className={this.state.currentMetric === 'value' ? 'active' : ''}
+                            onClick={() => this.handleMetricChange('value')}
+                        >
+                            Show Value
+                        </button>
+                        <button
+                            className={this.state.currentMetric === 'price' ? 'active' : ''}
+                            onClick={() => this.handleMetricChange('price')}
+                        >
+                            Show Price
+                        </button>
+                    </div>
                 </div>
                 {this.coins.map((coin) => (
                     <CryptoCoinChart
@@ -258,6 +279,7 @@ class CryptoChart extends React.Component {
                         coin={coin}
                         data={this.state.data}
                         color={COLORS[coin]}
+                        currentMetric={this.state.currentMetric} // Pass the currentMetric as a prop to CryptoCoinChart
                     />
                 ))}
             </div>
