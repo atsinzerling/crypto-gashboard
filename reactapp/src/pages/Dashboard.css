@@ -10,4 +10,41 @@
 }
 .display-metric-switch-buttons {
     display: flex;
+    margin: 10px 0; /* Add margin to the top and bottom of the buttons */
 }
+
+    .display-metric-switch-buttons button {
+        padding: 8px 13px; /* Add padding to the buttons */
+        border: none; /* Remove default border */
+        border-radius: 5px; /* Add rounded corners */
+        color: white; /* Button text color */
+        cursor: pointer; /* Add hand cursor on hover */
+        transition: background-color 0.3s ease; /* Smooth transition on hover */
+    }
+
+        .display-metric-switch-buttons button:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .display-metric-switch-buttons button:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .display-metric-switch-buttons button.active {
+            background-color: #007BFF; /* Active button color */
+        }
+
+            .display-metric-switch-buttons button.active:hover {
+                background-color: #0056b3; /* Active button hover color */
+            }
+
+        .display-metric-switch-buttons button.inactive {
+            background-color: #6c757d; /* Inactive button color */
+        }
+
+            .display-metric-switch-buttons button.inactive:hover {
+                background-color: #5a6268; /* Inactive button hover color */
+            }
+

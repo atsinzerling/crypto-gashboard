@@ -260,13 +260,13 @@ class CryptoChart extends React.Component {
                     <h2>Coins details</h2>
                     <div className='display-metric-switch-buttons'>
                         <button
-                            className={this.state.currentMetric === 'value' ? 'active' : ''}
+                            className={this.state.currentMetric === 'value' ? 'active' : 'inactive'}
                             onClick={() => this.handleMetricChange('value')}
                         >
                             Show Value
                         </button>
                         <button
-                            className={this.state.currentMetric === 'price' ? 'active' : ''}
+                            className={this.state.currentMetric === 'price' ? 'active' : 'inactive'}
                             onClick={() => this.handleMetricChange('price')}
                         >
                             Show Price
