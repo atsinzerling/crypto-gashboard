@@ -280,7 +280,9 @@ class CryptoChart extends React.Component {
                     </LineChart>
                     <div>
                         <p>{`Date: ${this.state.currentDataEntry.date}`}</p>
+                        <p>{`Profit: ${((this.state.currentDataEntry.total / this.state.currentDataEntry.totalinvested - 1) * 100)?.toFixed(2)} %`}</p>
                         <p>{`Total value: ${this.state.currentDataEntry.total?.toFixed(2)} USD`}</p>
+                        <p>{`Total invested: ${this.state.currentDataEntry.totalinvested?.toFixed(2)} USD`}</p>
                         {Object.keys(this.state.currentDataEntry.coins).map((coin) => (
                             <p key={coin}>
                                 <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.coins[coin].quantity}, Total Value = ${this.state.currentDataEntry.coins[coin].value.toFixed(2)} USD`}

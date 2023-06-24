@@ -85,6 +85,8 @@ class CryptoCoinChart extends React.Component {
 
                         ): (
                             <>
+                                <p>{`Profit: ${((this.state.currentCoinDataEntry.coins[coin]?.value / this.state.currentCoinDataEntry.coins[coin]?.invested - 1) * 100)?.toFixed(2)} %`}</p>
+                                <p>{`Invested: ${this.state.currentCoinDataEntry.coins[coin]?.invested?.toFixed(2)} USD`}</p>
                                 <p style={{ color }}>
                                     {`Value of ${coin}: ${this.state.currentCoinDataEntry.coins[coin]?.value?.toFixed(2)} USD`}
                                 </p>
