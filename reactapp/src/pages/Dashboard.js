@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { PieChart, Pie, Cell } from 'recharts';
+/*import { PieChart, Pie, Cell } from 'recharts';*/
 import moment from 'moment';
 import './Dashboard.css';
 import CryptoPieChart from './CryptoPieChart';
@@ -10,26 +10,39 @@ import CryptoCoinChart from './CryptoCoinChart';
 const holdings = [
     {
         date: '2023-01-01',
-        bitcoin: 400,
-        ethereum: 3000,
+        bitcoin: 10,
+        ethereum: 30,
+        ripple: 0
     },
     {
         date: '2023-02-01',
-        bitcoin: 410,
-        ethereum: 3100,
-        ripple: 190,
+        bitcoin: 20,
+        ethereum: 310,
+        ripple: 10000,
     },
     {
         date: '2023-03-01',
-        bitcoin: 500,
-        ethereum: 3150,
-        ripple: 210,
+        bitcoin: 15,
+        ethereum: 340,
+        ripple: 210000,
+    },
+    {
+        date: '2023-04-01',
+        bitcoin: 15,
+        ethereum: 340,
+        ripple: 300000,
     },
     {
         date: '2023-05-01',
-        bitcoin: 500,
-        ethereum: 3100,
-        ripple: 215,
+        bitcoin: 15,
+        ethereum: 330,
+        ripple: 290000,
+    },
+    {
+        date: '2023-06-01',
+        bitcoin: 10,
+        ethereum: 310,
+        ripple: 300000,
     }
 ];
 
@@ -138,6 +151,7 @@ class CryptoChart extends React.Component {
     }*/
 
     fetchData = async () => {
+        console.log("fetching");
         // Order the holdings data by date
         let holdingsData = [...this.state.holdingsData];
         holdingsData.sort((a, b) => moment(a.date).isBefore(moment(b.date)) ? -1 : 1);
@@ -159,6 +173,7 @@ class CryptoChart extends React.Component {
                 }
             });
 
+            // eslint-disable-next-line no-loop-func
             response.data.prices.forEach((item) => {
                 const date = moment(item[0]).format('YYYY-MM-DD');
                 const price = item[1];
@@ -184,9 +199,6 @@ class CryptoChart extends React.Component {
                 dataItem.quantity[coin] = quantity; // Add quantity to data item
                 dataItem.total = (dataItem.total || 0) + dataItem[coin]; // Update total value*/
 
-
-                
-
                 if (!dataItem.coins) {
                     dataItem.coins = {};
                 }
@@ -198,6 +210,26 @@ class CryptoChart extends React.Component {
                 dataItem.coins[coin].quantity = quantity;
                 dataItem.coins[coin].price = price;
                 dataItem.total = (dataItem.total || 0) + dataItem.coins[coin].value; // Update total value
+
+                //getting the investment
+                //should get the amount of investment by finding the previous date; smartly comparing the prev with the current,
+                //(check when prev should be zero), and then add the difference multiplied by the current price to the investment amount
+
+                const prevDay = moment(item[0]).subtract(1, 'days').format('YYYY-MM-DD');
+                const prevDayDataItem = chartData.find(dataItem => dataItem.date === prevDay);
+                console.log(date, dataItem, prevDay, prevDayDataItem);
+                let investedOnThisDate;
+                if (prevDayDataItem === undefined) {
+                    investedOnThisDate = dataItem.coins[coin].value ;
+                } else {
+                    console.log(quantity - prevDayDataItem.coins[coin].quantity);
+                    investedOnThisDate = prevDayDataItem.coins[coin].invested + (quantity - prevDayDataItem.coins[coin].quantity) * price;
+                }
+
+
+                dataItem.coins[coin].invested = investedOnThisDate;
+                dataItem.totalinvested = (dataItem.totalinvested || 0) + investedOnThisDate;
+
             });
         }
 
@@ -243,7 +275,8 @@ class CryptoChart extends React.Component {
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip content={this.CustomTooltip} />
-                        <Line type="monotone" dataKey="total" stroke="#8884d8" dot={false} /> {/* Show total value */}
+                        <Line type="monotone" dataKey="total" stroke="#001BFF" dot={false} />
+                        <Line type="monotone" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />
                     </LineChart>
                     <div>
                         <p>{`Date: ${this.state.currentDataEntry.date}`}</p>

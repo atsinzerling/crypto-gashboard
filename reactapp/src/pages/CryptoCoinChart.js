@@ -73,6 +73,7 @@ class CryptoCoinChart extends React.Component {
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip content={this.CustomTooltip} />
                         <Line type="monotone" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
+                        {currentMetric === 'price' ? (<></>) : (<Line type="monotone" dataKey={`coins.${coin}.invested`} stroke="#A0AAFF" dot={false} />) }
                     </LineChart>
                 <div style={{ marginLeft: '20px' }}>
                         <p>{`Date: ${this.state.currentCoinDataEntry.date}`}</p>
