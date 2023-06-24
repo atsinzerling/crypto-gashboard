@@ -9,18 +9,18 @@ const CryptoPieChart = ({ data, colors}) => {
     }));
 
     return (
-        <PieChart width={400} height={280}>
+        <PieChart width={190} height={170}>
             <Pie
                 dataKey="value"
                 isAnimationActive={false}
                 data={pieData}
-                cx={150}
-                cy={120}
+                cx={95}
+                cy={85}
                 outerRadius={80}
                 innerRadius={60} // This will create a "hole" in the center of the pie, turning it into a doughnut
                 fill="#8884d8"
                 labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`} // This will show the percentage of the total that each slice represents
+                //label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`} // This will show the percentage of the total that each slice represents
             >
                 {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={colors[entry.name]} />

@@ -53,66 +53,6 @@ const COLORS = {
     'litecoin': '#ffc658',
 };
 
-/*class CustomTooltip extends React.Component {
-    render() {
-        const { active, payload } = this.props;
-
-        if (active && payload && payload.length) {
-            return (
-                <div className="custom-tooltip">
-                    <p>{`${payload[0].payload.total.toFixed(2)} USD`}</p>
-                </div>
-            );
-        }
-
-        return null;
-    }
-}*/
-
-/*class PieChartComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            pieData: Object.keys(props.currentDataEntry.quantity).map((coin) => ({
-                name: coin,
-                value: props.currentDataEntry[coin],
-            })),
-        };
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.currentDataEntry !== this.props.currentDataEntry) {
-            this.setState({
-                pieData: Object.keys(this.props.currentDataEntry.quantity).map((coin) => ({
-                    name: coin,
-                    value: this.props.currentDataEntry[coin],
-                })),
-            });
-        }
-    }
-
-    render() {
-        return (
-            <PieChart width={400} height={400}>
-                <Pie
-                    dataKey="value"
-                    isAnimationActive={false}
-                    data={this.state.pieData}
-                    cx={200}
-                    cy={200}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    label
-                >
-                    {this.state.pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
-                    ))}
-                </Pie>
-            </PieChart>
-        );
-    }
-}*/
-
 class CryptoChart extends React.Component {
     constructor(props) {
         super(props);
@@ -139,7 +79,7 @@ class CryptoChart extends React.Component {
 
     componentDidMount() {
         this.fetchData();
-        console.log("fetching");
+        console.log("did mount");
     }
 
 /*    componentDidUpdate(prevProps, prevState) {
@@ -151,7 +91,7 @@ class CryptoChart extends React.Component {
     }*/
 
     fetchData = async () => {
-        console.log("fetching");
+        console.log("fetching func");
         // Order the holdings data by date
         let holdingsData = [...this.state.holdingsData];
         holdingsData.sort((a, b) => moment(a.date).isBefore(moment(b.date)) ? -1 : 1);
@@ -217,12 +157,10 @@ class CryptoChart extends React.Component {
 
                 const prevDay = moment(item[0]).subtract(1, 'days').format('YYYY-MM-DD');
                 const prevDayDataItem = chartData.find(dataItem => dataItem.date === prevDay);
-                console.log(date, dataItem, prevDay, prevDayDataItem);
                 let investedOnThisDate;
                 if (prevDayDataItem === undefined) {
                     investedOnThisDate = dataItem.coins[coin].value ;
                 } else {
-                    console.log(quantity - prevDayDataItem.coins[coin].quantity);
                     investedOnThisDate = prevDayDataItem.coins[coin].invested + (quantity - prevDayDataItem.coins[coin].quantity) * price;
                 }
 
@@ -242,8 +180,12 @@ class CryptoChart extends React.Component {
 
 
     CustomTooltip({ active, payload, label }) {
+        console.log("tooltip called");
         if (active && payload && payload.length) {
-            this.handleActiveTooltip(payload);
+            if (payload[0].payload.date !== this.state.currentDataEntry.date) {
+                console.log("tooltip update state");
+                this.handleActiveTooltip(payload);
+            }
 
             return (
                 <div className="custom-tooltip">
@@ -278,18 +220,22 @@ class CryptoChart extends React.Component {
                         <Line type="monotone" dataKey="total" stroke="#001BFF" dot={false} />
                         <Line type="monotone" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />
                     </LineChart>
-                    <div>
+                    <div style={{ marginLeft: '20px' }}>
+                        <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
                         <p>{`Date: ${this.state.currentDataEntry.date}`}</p>
                         <p>{`Profit: ${((this.state.currentDataEntry.total / this.state.currentDataEntry.totalinvested - 1) * 100)?.toFixed(2)} %`}</p>
                         <p>{`Total value: ${this.state.currentDataEntry.total?.toFixed(2)} USD`}</p>
                         <p>{`Total invested: ${this.state.currentDataEntry.totalinvested?.toFixed(2)} USD`}</p>
+                    </div>
+                    <div>
+                        
                         {Object.keys(this.state.currentDataEntry.coins).map((coin) => (
                             <p key={coin}>
-                                <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.coins[coin].quantity}, Total Value = ${this.state.currentDataEntry.coins[coin].value.toFixed(2)} USD`}
+                                <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: ${(this.state.currentDataEntry.coins[coin]?.value / this.state.currentDataEntry.total * 100).toFixed(1) } %`}
+                                {/*<span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.coins[coin].quantity}, Total Value = ${this.state.currentDataEntry.coins[coin].value.toFixed(2)} USD`}*/}
                             </p>
                         ))}
                     </div>
-                    <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
                 </div>
                 <div>
                     <h2>Coins details</h2>
