@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 /*import { PieChart, Pie, Cell } from 'recharts';*/
 import moment from 'moment';
 import './Dashboard.css';
@@ -215,7 +215,8 @@ class CryptoChart extends React.Component {
                     >
                         <XAxis dataKey="date" />
                         <YAxis />
-                        <CartesianGrid strokeDasharray="3 3" />
+                        {/*<CartesianGrid strokeDasharray="3 3" />*/}
+                        <ReferenceLine x={this.state.currentDataEntry.date} stroke="#ccc" />
                         <Tooltip content={this.CustomTooltip} />
                         <Line type="monotone" dataKey="total" stroke="#001BFF" dot={false} />
                         <Line type="monotone" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />

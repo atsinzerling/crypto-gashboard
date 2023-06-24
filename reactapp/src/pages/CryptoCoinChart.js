@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip , ReferenceLine} from 'recharts';
 import { PieChart, Pie, Cell } from 'recharts';
 import './CryptoCoinChart.css';
 
@@ -70,7 +70,7 @@ class CryptoCoinChart extends React.Component {
                     >
                         <XAxis dataKey="date" />
                         <YAxis />
-                        <CartesianGrid strokeDasharray="3 3" />
+                        <ReferenceLine x={this.state.currentCoinDataEntry.date} stroke="#ccc" />
                         <Tooltip content={this.CustomTooltip} />
                         <Line type="monotone" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
                         {currentMetric === 'price' ? (<></>) : (<Line type="monotone" dataKey={`coins.${coin}.invested`} stroke="#A0AAFF" dot={false} />) }
