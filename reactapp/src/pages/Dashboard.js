@@ -61,7 +61,12 @@ class CryptoChart extends React.Component {
             holdingsData: holdings,
             currentDataEntry: { total: 0, coins: {} },
             currentMetric: 'value', // for storing the current metric for the subgraphs
+            visibleData: [], // Initial visible data here
+            zoomLevel: 1
         };
+
+        this.chartRef = React.createRef();
+        this.wheelHandler = this.wheelHandler.bind(this);
 
         this.handleActiveTooltip = this.handleActiveTooltip.bind(this);
         this.CustomTooltip = this.CustomTooltip.bind(this);
@@ -80,6 +85,11 @@ class CryptoChart extends React.Component {
     componentDidMount() {
         this.fetchData();
         console.log("did mount");
+        this.chartRef.current.addEventListener("wheel", this.wheelHandler);
+    }
+
+    componentWillUnmount() {
+        this.chartRef.current.removeEventListener("wheel", this.wheelHandler);
     }
 
 /*    componentDidUpdate(prevProps, prevState) {
@@ -174,6 +184,7 @@ class CryptoChart extends React.Component {
         this.setState({
             data: chartData,
             currentDataEntry: chartData[chartData.length - 1],
+            visibleData: chartData,
         });
     };
 
@@ -203,14 +214,20 @@ class CryptoChart extends React.Component {
         });
     };
 
+    wheelHandler(e) {
+        e.preventDefault();
+        console.log("Mouse wheeling over graph");
+    };
+
     render() {
         return (
             <div>
                 <div className='display-graph-data'>
-                    <LineChart
+                    <div ref={this.chartRef}>
+                        <LineChart
                         width={500}
                         height={300}
-                        data={this.state.data}
+                        data={this.state.visibleData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                     >
                         <XAxis dataKey="date" />
@@ -221,6 +238,9 @@ class CryptoChart extends React.Component {
                         <Line type="monotone" dataKey="total" stroke="#001BFF" dot={false} />
                         <Line type="monotone" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />
                     </LineChart>
+
+                    </div>
+                    
                     <div style={{ marginLeft: '20px' }}>
                         <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
                         <p>{`Date: ${this.state.currentDataEntry.date}`}</p>
