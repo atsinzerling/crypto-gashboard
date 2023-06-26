@@ -62,7 +62,9 @@ class CryptoChart extends React.Component {
             currentDataEntry: { total: 0, coins: {} },
             currentMetric: 'value', // for storing the current metric for the subgraphs
             visibleData: [], // Initial visible data here
-            zoomLevel: 1
+            zoomLevel: 1,
+            visibleStart: 0,
+            visibleEnd: 0,
         };
 
         this.chartRef = React.createRef();
@@ -185,6 +187,7 @@ class CryptoChart extends React.Component {
             data: chartData,
             currentDataEntry: chartData[chartData.length - 1],
             visibleData: chartData,
+            visibleEnd: chartData.length - 1,
         });
     };
 
@@ -193,7 +196,7 @@ class CryptoChart extends React.Component {
     CustomTooltip({ active, payload, label }) {
         console.log("tooltip called");
         if (active && payload && payload.length) {
-            if (payload[0].payload.date !== this.state.currentDataEntry.date) {
+            if (payload[0].payload.date !== this.state.currentDataEntry?.date) {
                 console.log("tooltip update state");
                 this.handleActiveTooltip(payload);
             }
@@ -216,6 +219,47 @@ class CryptoChart extends React.Component {
 
     wheelHandler(e) {
         e.preventDefault();
+        const { zoomLevel, data, visibleData, visibleEnd, visibleStart } = this.state;
+
+        // Change the zoom level based on the event delta. 
+        // The exact formula will depend on how you want the zooming to behave.
+        const newZoomLevel = Math.max(1, zoomLevel - e.deltaY * 0.0008);
+
+        // Find the index of the current entry
+        const currentIndex = data.findIndex(entry => entry.date === this.state.currentDataEntry?.date);
+        /*const currentIndex = this.state.currentDataEntry?.date ;*/
+
+        if (currentIndex === undefined) {
+            return;
+        }
+
+        // Calculate the new visible range
+        const visibleRange = Math.round(data.length / newZoomLevel);
+
+        const visiblePositionRatio = (currentIndex - visibleStart) / (visibleEnd - visibleStart);
+
+        // Calculate the new start and end indices based on the mouse position and the new range
+        let newStart = Math.round(currentIndex - visiblePositionRatio * visibleRange);
+        let newEnd = newStart + visibleRange;
+
+        // Make sure the new range doesn't exceed the data boundaries
+        if (newStart < 0) {
+            newStart = 0;
+            newEnd = newStart + visibleRange;
+        }
+        if (newEnd > data.length) {
+            newEnd = data.length;
+            newStart = newEnd - visibleRange;
+        }
+
+        // Update the state with the new zoom level and visible data
+        this.setState({
+            zoomLevel: newZoomLevel,
+            visibleStart: newStart,
+            visibleEnd: newEnd,
+            visibleData: data.slice(newStart, newEnd),
+            currentDataEntry: data[currentIndex],
+        });
         console.log("Mouse wheeling over graph");
     };
 
@@ -225,7 +269,7 @@ class CryptoChart extends React.Component {
                 <div className='display-graph-data'>
                     <div ref={this.chartRef}>
                         <LineChart
-                        width={500}
+                        width={850}
                         height={300}
                         data={this.state.visibleData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -233,7 +277,7 @@ class CryptoChart extends React.Component {
                         <XAxis dataKey="date" />
                         <YAxis />
                         {/*<CartesianGrid strokeDasharray="3 3" />*/}
-                        <ReferenceLine x={this.state.currentDataEntry.date} stroke="#ccc" />
+                        <ReferenceLine key={this.state.currentDataEntry.date} x={this.state.currentDataEntry ? this.state.currentDataEntry.date : null} stroke="#ccc" />
                         <Tooltip content={this.CustomTooltip} />
                         <Line type="monotone" dataKey="total" stroke="#001BFF" dot={false} />
                         <Line type="monotone" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />
@@ -243,19 +287,19 @@ class CryptoChart extends React.Component {
                     
                     <div style={{ marginLeft: '20px' }}>
                         <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
-                        <p>{`Date: ${this.state.currentDataEntry.date}`}</p>
-                        <p>{`Profit: ${((this.state.currentDataEntry.total / this.state.currentDataEntry.totalinvested - 1) * 100)?.toFixed(2)} %`}</p>
-                        <p>{`Total value: ${this.state.currentDataEntry.total?.toFixed(2)} USD`}</p>
-                        <p>{`Total invested: ${this.state.currentDataEntry.totalinvested?.toFixed(2)} USD`}</p>
+                        <p>{`Date: ${this.state.currentDataEntry?.date}`}</p>
+                        <p>{`Profit: ${((this.state.currentDataEntry?.total / this.state.currentDataEntry?.totalinvested - 1) * 100)?.toFixed(2)} %`}</p>
+                        <p>{`Total value: ${this.state.currentDataEntry?.total?.toFixed(2)} USD`}</p>
+                        <p>{`Total invested: ${this.state.currentDataEntry?.totalinvested?.toFixed(2)} USD`}</p>
                     </div>
                     <div>
                         
-                        {Object.keys(this.state.currentDataEntry.coins).map((coin) => (
+                        {this.state.currentDataEntry && this.state.currentDataEntry.coins ? (Object.keys(this.state.currentDataEntry?.coins).map((coin) => (
                             <p key={coin}>
                                 <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: ${(this.state.currentDataEntry.coins[coin]?.value / this.state.currentDataEntry.total * 100).toFixed(1) } %`}
                                 {/*<span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.coins[coin].quantity}, Total Value = ${this.state.currentDataEntry.coins[coin].value.toFixed(2)} USD`}*/}
                             </p>
-                        ))}
+                        ))) : null}
                     </div>
                 </div>
                 <div>

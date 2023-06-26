@@ -3,10 +3,10 @@ import { PieChart, Pie, Cell } from 'recharts';
 
 
 const CryptoPieChart = ({ data, colors}) => {
-    const pieData = Object.keys(data.coins).map((coin) => ({
+    const pieData = (data?.coins ? Object.keys(data.coins).map((coin) => ({
         name: coin,
         value: data.coins[coin].value,
-    }));
+    })) : null);
 
     return (
         <PieChart width={190} height={170}>
@@ -22,9 +22,9 @@ const CryptoPieChart = ({ data, colors}) => {
                 labelLine={false}
                 //label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`} // This will show the percentage of the total that each slice represents
             >
-                {pieData.map((entry, index) => (
+                {(pieData ? pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={colors[entry.name]} />
-                ))}
+                )) : <></>)}
             </Pie>
             </PieChart>
     );

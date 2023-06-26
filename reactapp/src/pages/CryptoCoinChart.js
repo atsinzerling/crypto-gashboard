@@ -63,7 +63,7 @@ class CryptoCoinChart extends React.Component {
                 <h4>{`${coin}`}</h4>
                 <div className='display-subgraph-data'>
                     <LineChart
-                        width={440}
+                        width={700}
                         height={180}
                         data={data}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
