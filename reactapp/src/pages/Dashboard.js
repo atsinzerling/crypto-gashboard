@@ -53,6 +53,33 @@ const COLORS = {
     'litecoin': '#ffc658',
 };
 
+class CustomTick extends React.Component {
+    render() {
+        const { x, y, payload } = this.props;
+        let date = moment(payload.value);
+        console.log(date);
+
+        // Define custom tick formatting here
+        let format;
+        if (date.date() === 1 && date.month() === 0) {
+            format = 'YYYY';
+        } else if (date.date() === 1) {
+            format = 'MMM';
+        } else {
+            format = 'D';
+        }
+
+        console.log(date.format(format));
+        return (
+            <g transform={`translate(${x},${y})`}>
+                <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-35)">
+                    {date.format(format)}
+                </text>
+            </g>
+        );
+    }
+}
+
 class CryptoChart extends React.Component {
     constructor(props) {
         super(props);
@@ -75,14 +102,6 @@ class CryptoChart extends React.Component {
         this.coins = [...new Set(this.state.holdingsData.flatMap(holding => Object.keys(holding).filter(key => key !== 'date')))];
         this.startDate = this.state.holdingsData.reduce((minDate, holding) => holding.date < minDate ? holding.date : minDate, this.state.holdingsData[0].date);
     }
-
-    handleActiveTooltip = (payload) => {
-        if (payload && payload.length) {
-            this.setState({
-                currentDataEntry: payload[0].payload,
-            });
-        }
-    };
 
     componentDidMount() {
         this.fetchData();
@@ -183,6 +202,8 @@ class CryptoChart extends React.Component {
             });
         }
 
+        console.log("chartData", chartData);
+
         this.setState({
             data: chartData,
             currentDataEntry: chartData[chartData.length - 1],
@@ -191,7 +212,13 @@ class CryptoChart extends React.Component {
         });
     };
 
-
+    handleActiveTooltip = (payload) => {
+        if (payload && payload.length) {
+            this.setState({
+                currentDataEntry: payload[0].payload,
+            });
+        }
+    };
 
     CustomTooltip({ active, payload, label }) {
         console.log("tooltip called");
@@ -263,6 +290,8 @@ class CryptoChart extends React.Component {
         console.log("Mouse wheeling over graph");
     };
 
+
+
     render() {
         return (
             <div>
@@ -274,13 +303,16 @@ class CryptoChart extends React.Component {
                         data={this.state.visibleData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                     >
-                        <XAxis dataKey="date" />
-                        <YAxis />
+                            <XAxis dataKey="date"
+                                tick={<CustomTick />}
+                                interval={Math.floor((this.state.visibleEnd - this.state.visibleStart) / 4)}
+                            />
+                            <YAxis />
                         {/*<CartesianGrid strokeDasharray="3 3" />*/}
                         <ReferenceLine key={this.state.currentDataEntry.date} x={this.state.currentDataEntry ? this.state.currentDataEntry.date : null} stroke="#ccc" />
                         <Tooltip content={this.CustomTooltip} />
-                        <Line type="monotone" dataKey="total" stroke="#001BFF" dot={false} />
-                        <Line type="monotone" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />
+                            <Line type="linear" dataKey="total" stroke="#001BFF" dot={false} />
+                            <Line type="linear" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />
                     </LineChart>
 
                     </div>
