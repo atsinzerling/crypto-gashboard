@@ -6,8 +6,15 @@ import moment from 'moment';
 import './Dashboard.css';
 import CryptoPieChart from './CryptoPieChart';
 import CryptoCoinChart from './CryptoCoinChart';
+import CustomTick from './CustomTick';
 
 const holdings = [
+    {
+        date: '2022-12-01',
+        bitcoin: 9,
+        ethereum: 30,
+        ripple: 0
+    },
     {
         date: '2023-01-01',
         bitcoin: 10,
@@ -53,32 +60,7 @@ const COLORS = {
     'litecoin': '#ffc658',
 };
 
-class CustomTick extends React.Component {
-    render() {
-        const { x, y, payload } = this.props;
-        let date = moment(payload.value);
-        console.log(date);
 
-        // Define custom tick formatting here
-        let format;
-        if (date.date() === 1 && date.month() === 0) {
-            format = 'YYYY';
-        } else if (date.date() === 1) {
-            format = 'MMM';
-        } else {
-            format = 'D';
-        }
-
-        console.log(date.format(format));
-        return (
-            <g transform={`translate(${x},${y})`}>
-                <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-35)">
-                    {date.format(format)}
-                </text>
-            </g>
-        );
-    }
-}
 
 class CryptoChart extends React.Component {
     constructor(props) {
@@ -301,11 +283,12 @@ class CryptoChart extends React.Component {
                         width={850}
                         height={300}
                         data={this.state.visibleData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 50 }}
                     >
                             <XAxis dataKey="date"
-                                tick={<CustomTick />}
-                                interval={Math.floor((this.state.visibleEnd - this.state.visibleStart) / 4)}
+                                tick={<CustomTick visibleStart={this.state.visibleStart} visibleEnd={this.state.visibleEnd} visibleData={this.state.visibleData} />}
+
+                                interval={Math.floor((this.state.visibleEnd - this.state.visibleStart) / 10)}
                             />
                             <YAxis />
                         {/*<CartesianGrid strokeDasharray="3 3" />*/}
