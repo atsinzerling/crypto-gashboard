@@ -125,12 +125,24 @@ class CryptoChart extends React.Component {
                     days: moment().diff(moment(this.startDate), 'days') + 1
                 }
             });
-
+            console.log(response.data);
             // eslint-disable-next-line no-loop-func
-            response.data.prices.sort((a, b) => {
-                return - new Date(a[0]) + new Date(b[0]);
-            // eslint-disable-next-line no-loop-func
-            }).forEach((item) => {
+            let uniqueDates = [];
+            response.data.prices
+                .filter(item => {
+                    const date = moment(item[0]).format('YYYY-MM-DD');
+                    if (uniqueDates.includes(date)) {
+                        return false;
+                    } else {
+                        uniqueDates.push(date);
+                        return true;
+                    }
+                })
+                .sort((a, b) => {
+                    return - new Date(a[0]) + new Date(b[0]);
+                })
+                // eslint-disable-next-line no-loop-func
+                .forEach((item) => {
                 const date = moment(item[0]).format('YYYY-MM-DD');
                 const price = item[1];
 
@@ -175,8 +187,8 @@ class CryptoChart extends React.Component {
                 const prevDayDataItem = chartData.find(dataItem => dataItem.date === prevDay);
                 console.log("prevDayDataItem", prevDayDataItem, " date", date);
                 let investedOnThisDate;
-                if (prevDayDataItem === undefined) {
-                    investedOnThisDate = dataItem.coins[coin].value ;
+                if (prevDayDataItem === undefined || prevDayDataItem.coins === undefined || prevDayDataItem.coins[coin] === undefined) {
+                    investedOnThisDate = dataItem.coins[coin].value;
                 } else {
                     investedOnThisDate = prevDayDataItem.coins[coin].invested + (quantity - prevDayDataItem.coins[coin].quantity) * price;
                 }
@@ -294,7 +306,7 @@ class CryptoChart extends React.Component {
 
                                 interval={Math.floor((this.state.visibleEnd - this.state.visibleStart) / 10)}
                             />
-                            <YAxis />
+                            <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)} />
                         {/*<CartesianGrid strokeDasharray="3 3" />*/}
                         <ReferenceLine key={this.state.currentDataEntry.date} x={this.state.currentDataEntry ? this.state.currentDataEntry.date : null} stroke="#ccc" />
                         <Tooltip content={this.CustomTooltip} />
