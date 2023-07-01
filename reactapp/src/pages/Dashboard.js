@@ -116,18 +116,21 @@ class CryptoChart extends React.Component {
         for (let m = moment(this.startDate); m.isSameOrBefore(moment(), 'day'); m.add(1, 'days')) {
             chartData.push({ date: m.format('YYYY-MM-DD') });
         }
-
+        console.log(this.coins);
         for (const coin of this.coins) {
             // Fetch price data for the coin
             const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${coin.toLowerCase()}/market_chart`, {
                 params: {
                     vs_currency: 'usd',
-                    days: moment().diff(moment(this.startDate), 'days')
+                    days: moment().diff(moment(this.startDate), 'days') + 1
                 }
             });
 
             // eslint-disable-next-line no-loop-func
-            response.data.prices.forEach((item) => {
+            response.data.prices.sort((a, b) => {
+                return - new Date(a[0]) + new Date(b[0]);
+            // eslint-disable-next-line no-loop-func
+            }).forEach((item) => {
                 const date = moment(item[0]).format('YYYY-MM-DD');
                 const price = item[1];
 
@@ -170,6 +173,7 @@ class CryptoChart extends React.Component {
 
                 const prevDay = moment(item[0]).subtract(1, 'days').format('YYYY-MM-DD');
                 const prevDayDataItem = chartData.find(dataItem => dataItem.date === prevDay);
+                console.log("prevDayDataItem", prevDayDataItem, " date", date);
                 let investedOnThisDate;
                 if (prevDayDataItem === undefined) {
                     investedOnThisDate = dataItem.coins[coin].value ;
