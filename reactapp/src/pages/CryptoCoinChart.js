@@ -2,7 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip , ReferenceLine} from 'recharts';
 import { PieChart, Pie, Cell } from 'recharts';
+import moment from 'moment';
 import './CryptoCoinChart.css';
+
+import CustomTick from './CustomTick';
 
 class CryptoCoinChart extends React.Component {
     constructor(props) {
@@ -130,12 +133,16 @@ class CryptoCoinChart extends React.Component {
                     <div ref={this.chartRef}>
                         <LineChart
                         width={700}
-                            height={180}
+                            height={230}
                             data={this.state.visibleData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 45 }}
                     >
-                        <XAxis dataKey="date" />
-                        <YAxis />
+                            <XAxis dataKey="date"
+                                tick={<CustomTick visibleStart={this.state.visibleStart} visibleEnd={this.state.visibleEnd} visibleData={this.state.visibleData} />}
+
+                                interval={Math.floor((this.state.visibleEnd - this.state.visibleStart) / 10)}
+                            />
+                            <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)} />
                         <ReferenceLine x={this.state.currentCoinDataEntry.date} stroke="#ccc" />
                         <Tooltip content={this.CustomTooltip} />
                         <Line type="monotone" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
@@ -145,22 +152,20 @@ class CryptoCoinChart extends React.Component {
                     </div>
                     
                 <div style={{ marginLeft: '20px' }}>
-                        <p>{`Date: ${this.state.currentCoinDataEntry.date}`}</p>
+                        <p>{`Date: ${this.state.currentCoinDataEntry?.date ? moment(this.state.currentCoinDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</p>
                         {currentMetric === 'price' ? (
-
                             <p style={{ color }}>
-                                {`Price of ${coin}: ${this.state.currentCoinDataEntry.coins[coin]?.price?.toFixed(2)} USD`}
+                                {`Price of ${coin}: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.price)} USD`}
                             </p>
-
-                        ): (
+                        ) : (
                             <>
-                                <p>{`Profit: ${((this.state.currentCoinDataEntry.coins[coin]?.value / this.state.currentCoinDataEntry.coins[coin]?.invested - 1) * 100)?.toFixed(2)} %`}</p>
-                                <p>{`Invested: ${this.state.currentCoinDataEntry.coins[coin]?.invested?.toFixed(2)} USD`}</p>
+                                <p>{`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentCoinDataEntry.coins[coin]?.value / this.state.currentCoinDataEntry.coins[coin]?.invested - 1) * 100))} %`}</p>
+                                <p>{`Invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.invested)} USD`}</p>
                                 <p style={{ color }}>
-                                    {`Value of ${coin}: ${this.state.currentCoinDataEntry.coins[coin]?.value?.toFixed(2)} USD`}
+                                    {`Value of ${coin}: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.value)} USD`}
                                 </p>
                                 <p style={{ color }}>
-                                    {`Quantity: ${this.state.currentCoinDataEntry.coins[coin]?.quantity}`}
+                                    {`Quantity: ${new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.quantity)}`}
                                 </p>
                             </>
                         )}

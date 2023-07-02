@@ -143,8 +143,14 @@ class CryptoChart extends React.Component {
                 })
                 // eslint-disable-next-line no-loop-func
                 .forEach((item) => {
+
+
                 const date = moment(item[0]).format('YYYY-MM-DD');
                 const price = item[1];
+
+                    if (!moment(date).isSameOrAfter(this.startDate)) {
+                        return;
+                    }
 
                 // Find the corresponding holding for the current date
                 const newHolding = holdingsData.find(holding => holding.date === date);
@@ -155,7 +161,7 @@ class CryptoChart extends React.Component {
                 }
 
                 const quantity = currentHoldings[coin] || 0;
-
+                    console.log("date", date);
                 // Find the corresponding data item for the current date
                 const dataItem = chartData.find(dataItem => dataItem.date === date);
 
@@ -318,10 +324,11 @@ class CryptoChart extends React.Component {
                     
                     <div style={{ marginLeft: '20px' }}>
                         <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
-                        <p>{`Date: ${this.state.currentDataEntry?.date}`}</p>
-                        <p>{`Profit: ${((this.state.currentDataEntry?.total / this.state.currentDataEntry?.totalinvested - 1) * 100)?.toFixed(2)} %`}</p>
-                        <p>{`Total value: ${this.state.currentDataEntry?.total?.toFixed(2)} USD`}</p>
-                        <p>{`Total invested: ${this.state.currentDataEntry?.totalinvested?.toFixed(2)} USD`}</p>
+                        <p>{`Date: ${this.state.currentDataEntry?.date ? moment(this.state.currentDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</p>
+                        <p>{`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentDataEntry?.total / this.state.currentDataEntry?.totalinvested - 1) * 100))} %`}</p>
+                        <p>{`Total value: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.total)} USD`}</p>
+                        <p>{`Total invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.totalinvested)} USD`}</p>
+
                     </div>
                     <div>
                         
