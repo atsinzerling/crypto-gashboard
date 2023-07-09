@@ -145,8 +145,8 @@ class CryptoCoinChart extends React.Component {
                             <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)} />
                         <ReferenceLine x={this.state.currentCoinDataEntry.date} stroke="#ccc" />
                         <Tooltip content={this.CustomTooltip} />
-                        <Line type="monotone" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
-                        {currentMetric === 'price' ? (<></>) : (<Line type="monotone" dataKey={`coins.${coin}.invested`} stroke="#A0AAFF" dot={false} />) }
+                        <Line type="linear" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
+                        {currentMetric === 'price' ? (<></>) : (<Line type="linear" dataKey={`coins.${coin}.invested`} stroke="#A0AAFF" dot={false} />) }
                     </LineChart>
 
                     </div>
