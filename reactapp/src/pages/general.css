@@ -1,0 +1,27 @@
+body {
+}
+
+.tilee {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid grey;
+    background: #B3E1FF;
+}
+.tile1 {
+    max-width: 67%;
+    margin: 3px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid grey;
+    background: #C3E7FF;
+}
+.coins-container {
+    display: flex;
+    align-items: flex-start;
+}
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+}

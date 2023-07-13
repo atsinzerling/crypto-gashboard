@@ -8,6 +8,7 @@ const CustomTimeline = () => {
     const [currentDate, setCurrentDate] = useState();
     const [currentXPosition, setCurrentXPosition] = useState(0);
     const [dataPointsPositions, setDataPointsPositions] = useState([]);
+    const [zoomScale, setZoomScale] = useState(1);
 
     useEffect(() => {
         const svg = d3.select(svgRef.current);
@@ -43,6 +44,7 @@ const CustomTimeline = () => {
             .on("zoom", function (event) {
                 let t = event.transform;
                 let xScaleZ = t.rescaleX(xScale);
+                setZoomScale(t.k); // Store the zoom scale
                 let xAxisZ = d3
                     .axisBottom(xScaleZ)
                     .ticks(width > 800 ? d3.timeMonth.every(1) : d3.timeYear.every(1))
@@ -58,6 +60,7 @@ const CustomTimeline = () => {
             const hoveredDate = xScale.invert(xPosition - bounds.left);
             setCurrentDate(hoveredDate);
             setCurrentXPosition(xPosition - bounds.left); // update x position
+            console.log("moved");
         });
 
         svg.on("click", function (event) {
@@ -81,6 +84,16 @@ const CustomTimeline = () => {
             ]);
         });
     }, [timelineData]);
+
+    // Adjust data points position based on zoom scale
+    useEffect(() => {
+        setDataPointsPositions(prevPositions =>
+            prevPositions.map(pos => ({
+                ...pos,
+                position: (pos.position * zoomScale) % 100, // Adjust position based on zoom scale
+            }))
+        );
+    }, [zoomScale]);
 
     const handleChange = (value, uid) => {
         const newData = timelineData.map((item) => {
