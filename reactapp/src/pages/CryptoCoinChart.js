@@ -4,7 +4,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip , ReferenceLine} 
 import { PieChart, Pie, Cell } from 'recharts';
 import moment from 'moment';
 import './CryptoCoinChart.css';
-import './general.css';
 
 import CustomTick from './CustomTick';
 
@@ -128,10 +127,10 @@ class CryptoCoinChart extends React.Component {
     render() {
         const { coin, data, color, currentMetric} = this.props;
         return (
-            <div className='tile1'>
+            <div >
                 <h4>{`${coin}`}</h4>
-                <div className='display-subgraph-data' >
-                    <div ref={this.chartRef} className='tilee'>
+                <div className='display-subgraph-data'>
+                    <div ref={this.chartRef}>
                         <LineChart
                         width={700}
                             height={230}
@@ -151,8 +150,8 @@ class CryptoCoinChart extends React.Component {
                     </LineChart>
 
                     </div>
-                    <div className='coins-container'>
-                    <div style={{ marginLeft: '20px' }} className='tilee'>
+                    
+                <div style={{ marginLeft: '20px' }}>
                         <p>{`Date: ${this.state.currentCoinDataEntry?.date ? moment(this.state.currentCoinDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</p>
                         {currentMetric === 'price' ? (
                             <p style={{ color }}>
@@ -171,8 +170,7 @@ class CryptoCoinChart extends React.Component {
                             </>
                         )}
                         
-                        </div>
-                    </div>
+                </div>
                 </div>
             </div>
         );

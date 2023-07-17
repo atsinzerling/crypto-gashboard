@@ -4,7 +4,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } 
 /*import { PieChart, Pie, Cell } from 'recharts';*/
 import moment from 'moment';
 import './Dashboard.css';
-import './general.css';
 import CryptoPieChart from './CryptoPieChart';
 import CryptoCoinChart from './CryptoCoinChart';
 import CryptoChart from './CryptoChart';
@@ -302,7 +301,7 @@ class MainPane extends React.Component {
         return (
             <div>
                 <div className='display-graph-data'>
-                    <div ref={this.chartRef} className='tilee'>
+                    <div ref={this.chartRef}>
                         <CryptoChart
                             visibleData={this.state.visibleData}
                             currentDataEntry={this.state.currentDataEntry}
@@ -315,21 +314,14 @@ class MainPane extends React.Component {
                     </div>
 
                     <div style={{ marginLeft: '20px' }}>
-                        <div className='tilee'> 
-                            <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
+                        <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
+                        <p>{`Date: ${this.state.currentDataEntry?.date ? moment(this.state.currentDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</p>
+                        <p>{`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentDataEntry?.total / this.state.currentDataEntry?.totalinvested - 1) * 100))} %`}</p>
+                        <p>{`Total value: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.total)} USD`}</p>
+                        <p>{`Total invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.totalinvested)} USD`}</p>
 
-                        </div>
-                        <div className='tilee'>
-                            <p>{`Date: ${this.state.currentDataEntry?.date ? moment(this.state.currentDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</p>
-                            <p>{`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentDataEntry?.total / this.state.currentDataEntry?.totalinvested - 1) * 100))} %`}</p>
-                            <p>{`Total value: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.total)} USD`}</p>
-                            <p>{`Total invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.totalinvested)} USD`}</p>
-
-
-                        </div>
                     </div>
-                    <div className='coins-container'>
-                    <div className='tilee'>
+                    <div>
 
                         {this.state.currentDataEntry && this.state.currentDataEntry.coins ? (Object.keys(this.state.currentDataEntry?.coins).map((coin) => (
                             <p key={coin}>
@@ -337,7 +329,6 @@ class MainPane extends React.Component {
                                 {/*<span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.coins[coin].quantity}, Total Value = ${this.state.currentDataEntry.coins[coin].value.toFixed(2)} USD`}*/}
                             </p>
                         ))) : null}
-                        </div>
                     </div>
                 </div>
                 <div>
@@ -357,7 +348,6 @@ class MainPane extends React.Component {
                         </button>
                     </div>
                 </div>
-                <div className='chart-container'>
                 {this.coins.map((coin) => (
                     <CryptoCoinChart
                         key={coin}
@@ -367,7 +357,6 @@ class MainPane extends React.Component {
                         currentMetric={this.state.currentMetric} // Pass the currentMetric as a prop to CryptoCoinChart
                     />
                 ))}
-                </div>
             </div>
         );
     }
