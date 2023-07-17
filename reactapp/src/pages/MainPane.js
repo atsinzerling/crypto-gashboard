@@ -76,6 +76,7 @@ class MainPane extends React.Component {
             zoomLevel: 1,
             visibleStart: 0,
             visibleEnd: 0,
+            tooltipKey: 0,
         };
 
         this.chartRef = React.createRef();
@@ -250,6 +251,14 @@ class MainPane extends React.Component {
         });
     };
 
+    forceTooltipUpdate = () => {
+        setTimeout(() => {
+            this.setState((prevState) => ({
+                tooltipKey: prevState.tooltipKey + 1,
+            }));
+        }, 100);
+    }
+
     wheelHandler(e) {
         e.preventDefault();
         const { zoomLevel, data, visibleData, visibleEnd, visibleStart } = this.state;
@@ -294,7 +303,9 @@ class MainPane extends React.Component {
             currentDataEntry: data[currentIndex],
         });
         console.log("Mouse wheeling over graph");
+        this.forceTooltipUpdate();
     };
+
 
 
 
@@ -365,6 +376,7 @@ class MainPane extends React.Component {
                         data={this.state.data}
                         color={COLORS[coin]}
                         currentMetric={this.state.currentMetric} // Pass the currentMetric as a prop to CryptoCoinChart
+                        tooltipKey={this.state.tooltipKey}
                     />
                 ))}
                 </div>

@@ -4,7 +4,7 @@ import CustomTick from './CustomTick';
 
 class CryptoChart extends React.Component {
     render() {
-        const { visibleData, currentDataEntry, visibleStart, visibleEnd, handleActiveTooltip, CustomTooltip } = this.props;
+        const { visibleData, currentDataEntry, visibleStart, visibleEnd, handleActiveTooltip, CustomTooltip, tooltipKey } = this.props;
         return (
             <LineChart
                 width={850}
@@ -18,7 +18,7 @@ class CryptoChart extends React.Component {
                 />
                 <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)} />
                 <ReferenceLine key={currentDataEntry.date} x={currentDataEntry ? currentDataEntry.date : null} stroke="#ccc" />
-                <Tooltip content={CustomTooltip} />
+                <Tooltip content={CustomTooltip} key={tooltipKey} />
                 <Line type="linear" dataKey="total" stroke="#001BFF" dot={false} />
                 <Line type="linear" dataKey="totalinvested" stroke="#A0AAFF" dot={false} />
             </LineChart>
