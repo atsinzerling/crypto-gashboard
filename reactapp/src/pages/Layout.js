@@ -1,9 +1,23 @@
 import { Outlet, Link } from "react-router-dom";
 import './Layout.css';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#1976d2',
+        },
+        secondary: {
+            main: '#dc004e',
+        },
+    },
+});
+
+
 
 const Layout = () => {
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <nav>
                 <ul>
                     <li>
@@ -22,7 +36,7 @@ const Layout = () => {
             </nav>
 
             <Outlet />
-        </>
+        </ThemeProvider>
     )
 };
 
