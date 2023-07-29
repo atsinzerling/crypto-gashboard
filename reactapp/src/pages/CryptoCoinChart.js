@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip , ReferenceLine} from 'recharts';
 import { PieChart, Pie, Cell } from 'recharts';
+import { Box, Button, Typography } from '@mui/material';
 import moment from 'moment';
 import './CryptoCoinChart.css';
 
@@ -125,54 +126,58 @@ class CryptoCoinChart extends React.Component {
     };
 
     render() {
-        const { coin, data, color, currentMetric} = this.props;
+        const { coin, data, color, currentMetric } = this.props;
         return (
-            <div >
-                <h4>{`${coin}`}</h4>
-                <div className='display-subgraph-data'>
-                    <div ref={this.chartRef}>
+            <Box>
+                <Typography variant="h4">{`${coin}`}</Typography>
+                <Box display="flex">
+                    <Box ref={this.chartRef}>
                         <LineChart
-                        width={700}
+                            width={700}
                             height={230}
                             data={this.state.visibleData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 45 }}
-                    >
+                            margin={{ top: 5, right: 30, left: 20, bottom: 45 }}
+                        >
                             <XAxis dataKey="date"
                                 tick={<CustomTick visibleStart={this.state.visibleStart} visibleEnd={this.state.visibleEnd} visibleData={this.state.visibleData} />}
-
                                 interval={Math.floor((this.state.visibleEnd - this.state.visibleStart) / 10)}
                             />
                             <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)} />
-                        <ReferenceLine x={this.state.currentCoinDataEntry.date} stroke="#ccc" />
-                        <Tooltip content={this.CustomTooltip} />
-                        <Line type="linear" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
-                        {currentMetric === 'price' ? (<></>) : (<Line type="linear" dataKey={`coins.${coin}.invested`} stroke="#A0AAFF" dot={false} />) }
-                    </LineChart>
+                            <ReferenceLine x={this.state.currentCoinDataEntry.date} stroke="#ccc" />
+                            <Tooltip content={this.CustomTooltip} />
+                            <Line type="linear" dataKey={`coins.${coin}.${currentMetric}`} stroke={color} dot={false} />
+                            {currentMetric === 'price' ? null : <Line type="linear" dataKey={`coins.${coin}.invested`} stroke="#A0AAFF" dot={false} />}
+                        </LineChart>
+                    </Box>
 
-                    </div>
-                    
-                <div style={{ marginLeft: '20px' }}>
-                        <p>{`Date: ${this.state.currentCoinDataEntry?.date ? moment(this.state.currentCoinDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</p>
+                    <Box ml={2}>
+                        <Typography>
+                            {`Date: ${this.state.currentCoinDataEntry?.date ? moment(this.state.currentCoinDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}
+                        </Typography>
+
                         {currentMetric === 'price' ? (
-                            <p style={{ color }}>
+                            <Typography style={{ color: color }}>
                                 {`Price of ${coin}: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.price)} USD`}
-                            </p>
+                            </Typography>
                         ) : (
                             <>
-                                <p>{`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentCoinDataEntry.coins[coin]?.value / this.state.currentCoinDataEntry.coins[coin]?.invested - 1) * 100))} %`}</p>
-                                <p>{`Invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.invested)} USD`}</p>
-                                <p style={{ color }}>
+                                <Typography>
+                                    {`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentCoinDataEntry.coins[coin]?.value / this.state.currentCoinDataEntry.coins[coin]?.invested - 1) * 100))} %`}
+                                </Typography>
+                                <Typography>
+                                    {`Invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.invested)} USD`}
+                                </Typography>
+                                <Typography style={{ color: color }}>
                                     {`Value of ${coin}: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.value)} USD`}
-                                </p>
-                                <p style={{ color }}>
+                                </Typography>
+                                <Typography style={{ color: color }}>
                                     {`Quantity: ${new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(this.state.currentCoinDataEntry.coins[coin]?.quantity)}`}
-                                </p>
+                                </Typography>
                             </>
                         )}
-                        
-                </div>
-                </div>
-            </div>
+                    </Box>
+                </Box>
+            </Box>
         );
     }
 }

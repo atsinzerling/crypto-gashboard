@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 /*import { PieChart, Pie, Cell } from 'recharts';*/
+import { Box, Button, Typography } from '@mui/material';
 import moment from 'moment';
 import './Dashboard.css';
 import CryptoPieChart from './CryptoPieChart';
@@ -299,9 +300,9 @@ class MainPane extends React.Component {
 
     render() {
         return (
-            <div>
-                <div className='display-graph-data'>
-                    <div ref={this.chartRef}>
+            <Box>
+                <Box display="flex">
+                    <Box ref={this.chartRef}>
                         <CryptoChart
                             visibleData={this.state.visibleData}
                             currentDataEntry={this.state.currentDataEntry}
@@ -311,29 +312,29 @@ class MainPane extends React.Component {
                             CustomTooltip={this.CustomTooltip}
                         />
 
-                    </div>
+                    </Box>
 
-                    <div style={{ marginLeft: '20px' }}>
+                    <Box ml={2}>
                         <CryptoPieChart data={this.state.currentDataEntry} colors={COLORS} />
-                        <p>{`Date: ${this.state.currentDataEntry?.date ? moment(this.state.currentDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</p>
-                        <p>{`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentDataEntry?.total / this.state.currentDataEntry?.totalinvested - 1) * 100))} %`}</p>
-                        <p>{`Total value: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.total)} USD`}</p>
-                        <p>{`Total invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.totalinvested)} USD`}</p>
+                        <Typography >{`Date: ${this.state.currentDataEntry?.date ? moment(this.state.currentDataEntry.date).format('MMM D, YYYY') : 'Date not available'}`}</Typography >
+                        <Typography >{`Profit: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(((this.state.currentDataEntry?.total / this.state.currentDataEntry?.totalinvested - 1) * 100))} %`}</Typography >
+                        <Typography >{`Total value: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.total)} USD`}</Typography >
+                        <Typography >{`Total invested: ${new Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.state.currentDataEntry?.totalinvested)} USD`}</Typography >
 
-                    </div>
-                    <div>
+                    </Box>
+                    <Box>
 
                         {this.state.currentDataEntry && this.state.currentDataEntry.coins ? (Object.keys(this.state.currentDataEntry?.coins).map((coin) => (
-                            <p key={coin}>
+                            <Typography key={coin}>
                                 <span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: ${(this.state.currentDataEntry.coins[coin]?.value / this.state.currentDataEntry.total * 100).toFixed(1)} %`}
                                 {/*<span style={{ color: COLORS[coin] }}>{`${coin}`}</span>{`: Quantity = ${this.state.currentDataEntry.coins[coin].quantity}, Total Value = ${this.state.currentDataEntry.coins[coin].value.toFixed(2)} USD`}*/}
-                            </p>
+                            </Typography>
                         ))) : null}
-                    </div>
-                </div>
-                <div>
-                    <h2>Coins details</h2>
-                    <div className='display-metric-switch-buttons'>
+                    </Box>
+                </Box>
+                <Box>
+                    <Typography variant="h2">Coins details</Typography>
+                    <Box className='display-metric-switch-buttons'>
                         <button
                             className={this.state.currentMetric === 'value' ? 'active' : 'inactive'}
                             onClick={() => this.handleMetricChange('value')}
@@ -346,8 +347,8 @@ class MainPane extends React.Component {
                         >
                             Show Price
                         </button>
-                    </div>
-                </div>
+                    </Box>
+                </Box>
                 {this.coins.map((coin) => (
                     <CryptoCoinChart
                         key={coin}
@@ -357,7 +358,7 @@ class MainPane extends React.Component {
                         currentMetric={this.state.currentMetric} // Pass the currentMetric as a prop to CryptoCoinChart
                     />
                 ))}
-            </div>
+            </Box>
         );
     }
 }
