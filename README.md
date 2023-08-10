@@ -5,7 +5,7 @@ Crypto Dashboard is a dynamic cryptocurrency tracking application. Built on the 
 The dashboard fetches real-time data from CoinGecko using the Axios HTTP client. A dynamic holdings chart and interactive graphs is crafted with Recharts, and the MUI library is used for design.
 
 ## Features
-- Fetches real-time data from CoinGecko.
+- Fetches historical data from CoinGecko.
 - Displays user's hypothetical cryptocurrency holdings over time.
 - Dynamic holdings chart for each cryptocurrency.
 - Interactive performance graphs.
