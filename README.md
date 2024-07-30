@@ -10,7 +10,7 @@ The dashboard fetches real-time data from CoinGecko using the Axios HTTP client.
 - Dynamic holdings chart for each cryptocurrency.
 - Interactive performance graphs.
 
-## Installation of frontend part (backend is not available yet)
+## Installation
 
 1. Clone the repository:<br />
   `git clone [https://github.com/madzadev/calculator.git](https://github.com/atsinzerling/crypto-gashboard.git)` 
